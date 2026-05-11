@@ -44,13 +44,31 @@ def ff_lookup():
         basic = data["data"]["profile"]["basicinfo"]
 
         return jsonify({
-            "owner": "r3xtron",
             "status": True,
-            "nickname": basic["nickname"],
-            "uid": basic["accountid"],
-            "level": basic["level"],
-            "likes": basic["liked"],
-            "region": basic["region"]
+            "owner": "r3xtron",
+            "data": {
+                "nickname": basic["nickname"],
+                "accountid": basic["accountid"],
+                "level": basic["level"],
+                "exp": basic["exp"],
+                "rank": basic["rank"],
+                "rankingpoints": basic["rankingpoints"],
+                "region": basic["region"],
+                "liked": basic["liked"],
+                "createat": basic["createat"],
+                "lastloginat": basic["lastloginat"],
+                "releaseversion": basic["releaseversion"],
+                "accounttype": basic["accounttype"],
+                "csrank": basic["csrank"],
+                "csrankingpoints": basic["csrankingpoints"],
+                "maxrank": basic["maxrank"],
+                "csmaxrank": basic["csmaxrank"],
+                "badgecnt": basic["badgecnt"],
+                "badgeid": basic["badgeid"],
+                "bannerid": basic["bannerid"],
+                "headpic": basic["headpic"],
+                "pinid": basic["pinid"]
+            }
         })
 
     except Exception as e:
