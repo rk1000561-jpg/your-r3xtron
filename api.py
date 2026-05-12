@@ -40,34 +40,56 @@ def ff_lookup():
             headers=headers
         )
 
-        data = response.json()
+        # 🔥 FIX 1: safe JSON parsing
+        try:
+            data = response.json()
+        except:
+            return jsonify({
+                "status": False,
+                "error": "Invalid API response (not JSON)"
+            })
+
+        # 🔥 FIX 2: type check
+        if not isinstance(data, dict):
+            return jsonify({
+                "status": False,
+                "error": "API returned invalid format"
+            })
+
+        # 🔥 FIX 3: structure safety check
+        if "data" not in data or "profile" not in data["data"] or "basicinfo" not in data["data"]["profile"]:
+            return jsonify({
+                "status": False,
+                "error": "Incomplete API response"
+            })
+
         basic = data["data"]["profile"]["basicinfo"]
 
         return jsonify({
             "status": True,
             "owner": "r3xtron",
             "data": {
-                "nickname": basic["nickname"],
-                "accountid": basic["accountid"],
-                "level": basic["level"],
-                "exp": basic["exp"],
-                "rank": basic["rank"],
-                "rankingpoints": basic["rankingpoints"],
-                "region": basic["region"],
-                "liked": basic["liked"],
-                "createat": basic["createat"],
-                "lastloginat": basic["lastloginat"],
-                "releaseversion": basic["releaseversion"],
-                "accounttype": basic["accounttype"],
-                "csrank": basic["csrank"],
-                "csrankingpoints": basic["csrankingpoints"],
-                "maxrank": basic["maxrank"],
-                "csmaxrank": basic["csmaxrank"],
-                "badgecnt": basic["badgecnt"],
-                "badgeid": basic["badgeid"],
-                "bannerid": basic["bannerid"],
-                "headpic": basic["headpic"],
-                "pinid": basic["pinid"]
+                "nickname": basic.get("nickname"),
+                "accountid": basic.get("accountid"),
+                "level": basic.get("level"),
+                "exp": basic.get("exp"),
+                "rank": basic.get("rank"),
+                "rankingpoints": basic.get("rankingpoints"),
+                "region": basic.get("region"),
+                "liked": basic.get("liked"),
+                "createat": basic.get("createat"),
+                "lastloginat": basic.get("lastloginat"),
+                "releaseversion": basic.get("releaseversion"),
+                "accounttype": basic.get("accounttype"),
+                "csrank": basic.get("csrank"),
+                "csrankingpoints": basic.get("csrankingpoints"),
+                "maxrank": basic.get("maxrank"),
+                "csmaxrank": basic.get("csmaxrank"),
+                "badgecnt": basic.get("badgecnt"),
+                "badgeid": basic.get("badgeid"),
+                "bannerid": basic.get("bannerid"),
+                "headpic": basic.get("headpic"),
+                "pinid": basic.get("pinid")
             }
         })
 
