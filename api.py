@@ -37,10 +37,11 @@ def ff_lookup():
         response = requests.post(
             "https://freefirenation.com/wp-admin/admin-ajax.php",
             data=payload,
-            headers=headers
+            headers=headers,
+            timeout=15
         )
 
-        # 🔥 FIX 1: safe JSON parsing
+        # 🔥 SAFE JSON PARSE
         try:
             data = response.json()
         except:
@@ -49,21 +50,18 @@ def ff_lookup():
                 "error": "Invalid API response (not JSON)"
             })
 
-        # 🔥 FIX 2: type check
-        if not isinstance(data, dict):
+        # 🔥 SAFE STRUCTURE CHECK
+        basic = (
+            data.get("data", {})
+                .get("profile", {})
+                .get("basicinfo", {})
+        )
+
+        if not basic:
             return jsonify({
                 "status": False,
-                "error": "API returned invalid format"
+                "error": "No player data found"
             })
-
-        # 🔥 FIX 3: structure safety check
-        if "data" not in data or "profile" not in data["data"] or "basicinfo" not in data["data"]["profile"]:
-            return jsonify({
-                "status": False,
-                "error": "Incomplete API response"
-            })
-
-        basic = data["data"]["profile"]["basicinfo"]
 
         return jsonify({
             "status": True,
@@ -98,3 +96,8 @@ def ff_lookup():
             "status": False,
             "error": str(e)
         })
+
+
+# 🔥 VERCEL IMPORTANT HANDLER
+def handler(environ, start_response):
+    return app(environ, start_response)
